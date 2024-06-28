@@ -1,6 +1,6 @@
 <script lang="ts">
   import { type GachaDrawResult } from '$lib';
-  import { chain } from 'lodash-es';
+  import _ from 'lodash';
 
   enum display {
     hist = 1,
@@ -11,7 +11,7 @@
   export let displayType = display.hist;
 
   $: over5000 = gachaDrawHistory.length > 5000;
-  $: analysisData = chain(gachaDrawHistory)
+  $: analysisData = _.chain(gachaDrawHistory)
     .groupBy('randomItem.name')
     .entries()
     .map(([name, data]) => ({
