@@ -9,8 +9,7 @@
   let openRateModal = false;
   let latestDrawnItem: GachaDrawResult | undefined;
   let gachaDrawHistory: GachaDrawResult[] = [];
-  let keepDrawing = false;
-  let keepDrawingItem: GachaItem;
+  let keepDrawingItem: GachaItem | null = null;
 
   async function draw() {
     // prevent reactivity from updating the array
@@ -18,7 +17,7 @@
     do {
       latestDrawnItem = drawItem(selectedGacha);
       tmp.push(latestDrawnItem);
-    } while (keepDrawing && latestDrawnItem.randomItem !== keepDrawingItem);
+    } while (keepDrawingItem !== null && latestDrawnItem.randomItem !== keepDrawingItem);
     gachaDrawHistory = [...tmp];
   }
 
@@ -63,19 +62,14 @@
     {#if selectedGacha}
       <div class="form-control">
         <label class="label cursor-pointer justify-normal gap-4">
-          <input type="checkbox" class="checkbox checkbox-sm" bind:checked={keepDrawing} />
-          <span class="space-x-2">
-            <span class="label-text">抽到</span>
-            <select
-              class="select select-bordered select-sm"
-              disabled={!keepDrawing}
-              bind:value={keepDrawingItem}
-            >
+          <span class="space-x-2 whitespace-nowrap">
+            <span class="label-text">持續到抽中</span>
+            <select class="select select-bordered select-sm" bind:value={keepDrawingItem}>
+              <option value={null}>不設定</option>
               {#each selectedGacha.items as gachaItem}
                 <option value={gachaItem}>{gachaItem.name}</option>
               {/each}
             </select>
-            <span class="label-text">為止</span>
           </span>
         </label>
       </div>
@@ -83,9 +77,10 @@
   </div>
 
   {#if latestDrawnItem}
-    <div class="flex gap-2 items-center">
-      <div>第 {gachaDrawHistory.length} 抽:</div>
-      <div>{latestDrawnItem.randomItem.name} / {latestDrawnItem.randomItem.rate}%</div>
+    <div class="flex flex-col gap-2">
+      <div>第 {gachaDrawHistory.length} 抽</div>
+      <div>{latestDrawnItem.randomItem.name}</div>
+      <div>物品機率: {latestDrawnItem.randomItem.rate}%</div>
     </div>
     <div>
       <GachaDrawHistory {gachaDrawHistory} />
