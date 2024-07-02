@@ -79,7 +79,14 @@
   {#if latestDrawnItem}
     <div class="flex flex-col gap-2">
       <div>第 {gachaDrawHistory.length} 抽</div>
-      <div>{latestDrawnItem.randomItem.name}</div>
+      <div class="bg-white rounded-xl p-1 self-start">
+        <div
+          class="border border-gray-300 rounded-xl py-2 px-4 bg-white flex gap-2 items-center cursor-default"
+        >
+          <img src="/unknown.png" alt="unknown" />
+          <span class="text-black font-serif font-bold">{latestDrawnItem.randomItem.name}</span>
+        </div>
+      </div>
       <div>物品機率: {latestDrawnItem.randomItem.rate}%</div>
     </div>
     <div>
