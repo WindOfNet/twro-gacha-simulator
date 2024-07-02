@@ -67,7 +67,22 @@
   <div class="max-w-sm">
     <div class="flex gap-4">
       <div class="w-full">
-        <button class="btn btn-primary w-full" on:click={executeDraw}>抽</button>
+        <button
+          class="btn btn-primary w-full"
+          on:click={() => {
+            if (isDrawing) {
+              isDrawing = false;
+            } else {
+              executeDraw();
+            }
+          }}
+        >
+          {#if keepDrawingItem && isDrawing}
+            停止
+          {:else}
+            抽
+          {/if}
+        </button>
       </div>
       <div class="w-full">
         <button class="btn btn-warning w-full" on:click={reset}>清除紀錄</button>
