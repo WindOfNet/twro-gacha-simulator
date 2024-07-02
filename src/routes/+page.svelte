@@ -15,24 +15,22 @@
 
   async function executeDraw() {
     isDrawing = true;
-    await new Promise<void>(async (resolve) => {
-      do {
-        latestDrawnItem = draw(selectedGacha);
-        gachaDrawHistory.push(latestDrawnItem);
-        if (drawInterval > 0) {
-          // force update for svelte to render
-          gachaDrawHistory = gachaDrawHistory;
-          await new Promise((innerResolve) => setTimeout(innerResolve, drawInterval));
-        }
-      } while (
-        keepDrawingItem !== null &&
-        isDrawing &&
-        latestDrawnItem.randomItem !== keepDrawingItem
-      );
-      // force update for svelte to render
-      gachaDrawHistory = gachaDrawHistory;
-      resolve();
-    });
+    do {
+      latestDrawnItem = draw(selectedGacha);
+      // 效能考量  不反應陣列
+      gachaDrawHistory.push(latestDrawnItem);
+      if (drawInterval > 0) {
+        // force update for svelte to render
+        gachaDrawHistory = gachaDrawHistory;
+        await new Promise((resolve) => setTimeout(resolve, drawInterval));
+      }
+    } while (
+      keepDrawingItem !== null &&
+      isDrawing &&
+      latestDrawnItem.randomItem !== keepDrawingItem
+    );
+    // force update for svelte to render
+    gachaDrawHistory = gachaDrawHistory;
     isDrawing = false;
   }
 
@@ -96,7 +94,7 @@
               <span class="label-text">每抽間隔</span>
               <input
                 type="number"
-                class="input input-sm text-right w-32"
+                class="input input-sm input-bordered text-right w-32"
                 bind:value={drawInterval}
               />
               <span class="label-text">毫秒</span>
