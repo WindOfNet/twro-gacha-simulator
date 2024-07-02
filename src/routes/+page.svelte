@@ -18,8 +18,10 @@
     await new Promise<void>(async (resolve) => {
       do {
         latestDrawnItem = draw(selectedGacha);
-        gachaDrawHistory = [...gachaDrawHistory, latestDrawnItem];
+        gachaDrawHistory.push(latestDrawnItem);
         if (drawInterval > 0) {
+          // force update for svelte to render
+          gachaDrawHistory = gachaDrawHistory;
           await new Promise((innerResolve) => setTimeout(innerResolve, drawInterval));
         }
       } while (
@@ -27,6 +29,8 @@
         isDrawing &&
         latestDrawnItem.randomItem !== keepDrawingItem
       );
+      // force update for svelte to render
+      gachaDrawHistory = gachaDrawHistory;
       resolve();
     });
     isDrawing = false;
