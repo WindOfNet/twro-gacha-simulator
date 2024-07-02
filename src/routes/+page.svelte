@@ -10,20 +10,32 @@
   let latestDrawnItem: GachaDrawResult | undefined;
   let gachaDrawHistory: GachaDrawResult[] = [];
   let keepDrawingItem: GachaItem | null = null;
+  let drawInterval = 50;
+  let isDrawing = false;
 
   async function draw() {
-    // prevent reactivity from updating the array
-    const tmp = [...gachaDrawHistory];
-    do {
-      latestDrawnItem = drawItem(selectedGacha);
-      tmp.push(latestDrawnItem);
-    } while (keepDrawingItem !== null && latestDrawnItem.randomItem !== keepDrawingItem);
-    gachaDrawHistory = [...tmp];
+    isDrawing = true;
+    await new Promise<void>(async (resolve) => {
+      do {
+        latestDrawnItem = drawItem(selectedGacha);
+        gachaDrawHistory = [...gachaDrawHistory, latestDrawnItem];
+        if (drawInterval > 0) {
+          await new Promise((innerResolve) => setTimeout(innerResolve, drawInterval));
+        }
+      } while (
+        keepDrawingItem !== null &&
+        isDrawing &&
+        latestDrawnItem.randomItem !== keepDrawingItem
+      );
+      resolve();
+    });
+    isDrawing = false;
   }
 
   function reset() {
     latestDrawnItem = undefined;
     gachaDrawHistory = [];
+    isDrawing = false;
   }
 
   function onGachaChange() {
@@ -73,6 +85,21 @@
           </span>
         </label>
       </div>
+      {#if keepDrawingItem}
+        <div class="form-control">
+          <label class="label cursor-pointer justify-normal gap-4">
+            <span class="space-x-2 whitespace-nowrap">
+              <span class="label-text">每抽間隔</span>
+              <input
+                type="number"
+                class="input input-sm text-right w-32"
+                bind:value={drawInterval}
+              />
+              <span class="label-text">毫秒</span>
+            </span>
+          </label>
+        </div>
+      {/if}
     {/if}
   </div>
 
