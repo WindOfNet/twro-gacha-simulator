@@ -1,6 +1,6 @@
 <script lang="ts">
   import { type Gacha, type GachaDrawResult, type GachaItem } from '$lib';
-  import { drawItem } from '$lib/core';
+  import { draw } from '$lib/core';
   import GachaSelector from '$lib/GachaSelector.svelte';
   import GachaDetailDialog from '$lib/GachaDetailDialog.svelte';
   import GachaDrawHistory from '$lib/GachaDrawHistory.svelte';
@@ -13,11 +13,11 @@
   let drawInterval = 50;
   let isDrawing = false;
 
-  async function draw() {
+  async function executeDraw() {
     isDrawing = true;
     await new Promise<void>(async (resolve) => {
       do {
-        latestDrawnItem = drawItem(selectedGacha);
+        latestDrawnItem = draw(selectedGacha);
         gachaDrawHistory = [...gachaDrawHistory, latestDrawnItem];
         if (drawInterval > 0) {
           await new Promise((innerResolve) => setTimeout(innerResolve, drawInterval));
@@ -65,7 +65,7 @@
   <div class="max-w-sm">
     <div class="flex gap-4">
       <div class="w-full">
-        <button class="btn btn-primary w-full" on:click={draw}>抽</button>
+        <button class="btn btn-primary w-full" on:click={executeDraw}>抽</button>
       </div>
       <div class="w-full">
         <button class="btn btn-warning w-full" on:click={reset}>清除紀錄</button>

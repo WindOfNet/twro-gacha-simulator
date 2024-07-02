@@ -1,6 +1,6 @@
 import type { Gacha, GachaDrawResult } from '$lib';
 
-export function drawItem(gacha: Gacha): GachaDrawResult {
+export function draw(gacha: Gacha): GachaDrawResult {
   let totalRate = 0;
   const items = gacha.items;
   items.forEach((item) => (totalRate += item.rate));

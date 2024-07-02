@@ -1,4 +1,4 @@
-import { drawItem } from './core';
+import { draw } from './core';
 import { describe, expect, test } from 'vitest';
 import gachas from '../gachas';
 
@@ -65,7 +65,7 @@ describe('gachas config', () => {
 
 describe('draw', () => {
   gachas.forEach((currentGacha) => {
-    const result = drawItem(currentGacha);
+    const result = draw(currentGacha);
 
     // result 是一個 GachaDrawResult 類型
     // result.gacha 應該等於 currentGacha
