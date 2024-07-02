@@ -28,7 +28,7 @@
 
   function onGachaChange() {
     reset();
-    keepDrawingItem = selectedGacha.items[0];
+    keepDrawingItem = null;
   }
 </script>
 
