@@ -9,10 +9,8 @@
   }
 
   export let gachaDrawHistory: GachaDrawResult[] = [];
-  export let displayType = display.hist;
 
-  let r1: HTMLInputElement;
-  let r2: HTMLInputElement;
+  let displayType = display.hist;
 
   $: over5000 = gachaDrawHistory.length > 5000;
   $: analysisData = _.chain(gachaDrawHistory)
@@ -27,39 +25,24 @@
 </script>
 
 <div class="flex flex-col gap-2">
-  <input
-    bind:this={r1}
-    class="hidden"
-    type="radio"
-    name="type"
-    value={display.hist}
-    bind:group={displayType}
-  />
-  <input
-    bind:this={r2}
-    class="hidden"
-    type="radio"
-    name="type"
-    value={display.analysis}
-    bind:group={displayType}
-  />
-
   <div class="join">
     <button
       class="btn join-item"
       class:btn-primary={displayType === display.hist}
-      on:click={() => r1.click()}
+      on:click={() => (displayType = display.hist)}
     >
+      <!-- eslint-disable-next-line -->
       {@html fe.icons['list'].toSvg({ class: 'w-5 h-5' })}
-      顯示紀錄
+      <span>顯示紀錄</span>
     </button>
     <button
       class="btn join-item"
       class:btn-primary={displayType === display.analysis}
-      on:click={() => r2.click()}
+      on:click={() => (displayType = display.analysis)}
     >
+      <!-- eslint-disable-next-line -->
       {@html fe.icons['activity'].toSvg({ class: 'w-5 h-5' })}
-      顯示統計
+      <span>顯示統計</span>
     </button>
   </div>
 
