@@ -94,6 +94,8 @@
               <span class="label-text">每抽間隔</span>
               <input
                 type="number"
+                inputmode="numeric"
+                min="0"
                 class="input input-sm input-bordered text-right w-32"
                 bind:value={drawInterval}
               />
