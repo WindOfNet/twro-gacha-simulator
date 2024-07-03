@@ -1,31 +1,36 @@
 <script lang="ts">
   import { type Gacha, type GachaDrawResult, type GachaItem } from '$lib';
   import { draw } from '$lib/core';
-  import GachaSelector from '$lib/GachaSelector.svelte';
-  import GachaDetailDialog from '$lib/GachaDetailDialog.svelte';
-  import GachaDrawHistory from '$lib/GachaDrawHistory.svelte';
+  import GachaSelector from '$pageComponents/home/GachaSelector.svelte';
+  import DrawnInfo from '$pageComponents/home/DrawnInfo.svelte';
+  import DrawExecutor from '$pageComponents/home/DrawExecutor.svelte';
 
   let selectedGacha: Gacha;
-  let openRateModal = false;
   let latestDrawnItem: GachaDrawResult | undefined;
   let gachaDrawHistory: GachaDrawResult[] = [];
   let keepDrawingItem: GachaItem | null = null;
   let drawInterval = 50;
   let isDrawing = false;
 
-  async function executeDraw() {
+  async function onDrawClick(size: number) {
+    if (isDrawing) {
+      isDrawing = false;
+      return;
+    }
+
     isDrawing = true;
+    let count = 0;
     do {
       latestDrawnItem = draw(selectedGacha);
       // 效能考量  不反應陣列
       gachaDrawHistory.push(latestDrawnItem);
-      if (drawInterval > 0) {
+      if ((!!keepDrawingItem || size > 1) && drawInterval > 0) {
         // force update for svelte to render
         gachaDrawHistory = gachaDrawHistory;
         await new Promise((resolve) => setTimeout(resolve, drawInterval));
       }
     } while (
-      keepDrawingItem !== null &&
+      (++count < size || keepDrawingItem !== null) &&
       isDrawing &&
       latestDrawnItem.randomItem !== keepDrawingItem
     );
@@ -47,80 +52,16 @@
 </script>
 
 <div class="flex flex-col gap-4">
-  <div class="flex gap-2 items-center">
-    <div>轉蛋:</div>
-    <div>
-      <GachaSelector bind:value={selectedGacha} on:change={onGachaChange} />
-    </div>
-    <div class="label self-end">
-      <span />
-      <button
-        class="block link link-primary label-text-alt cursor-pointer"
-        on:click={() => (openRateModal = true)}
-      >
-        轉蛋內容
-      </button>
-      <GachaDetailDialog bind:open={openRateModal} gacha={selectedGacha} />
-    </div>
-  </div>
+  <GachaSelector bind:value={selectedGacha} on:change={onGachaChange} />
 
-  <div class="max-w-sm">
-    <div class="flex gap-4">
-      <div class="w-full">
-        <button
-          class="btn btn-primary w-full"
-          on:click={() => {
-            if (isDrawing) {
-              isDrawing = false;
-            } else {
-              executeDraw();
-            }
-          }}
-        >
-          {#if keepDrawingItem && isDrawing}
-            停止
-          {:else}
-            抽
-          {/if}
-        </button>
-      </div>
-      <div class="w-full">
-        <button class="btn btn-warning w-full" on:click={reset}>清除紀錄</button>
-      </div>
-    </div>
-    {#if selectedGacha}
-      <div class="form-control">
-        <label class="label cursor-pointer justify-normal gap-4">
-          <span class="space-x-2 whitespace-nowrap">
-            <span class="label-text">持續到抽中</span>
-            <select class="select select-bordered select-sm" bind:value={keepDrawingItem}>
-              <option value={null}>不設定</option>
-              {#each selectedGacha.items as gachaItem}
-                <option value={gachaItem}>{gachaItem.name}</option>
-              {/each}
-            </select>
-          </span>
-        </label>
-      </div>
-      {#if keepDrawingItem}
-        <div class="form-control">
-          <label class="label cursor-pointer justify-normal gap-4">
-            <span class="space-x-2 whitespace-nowrap">
-              <span class="label-text">每抽間隔</span>
-              <input
-                type="number"
-                inputmode="numeric"
-                min="0"
-                class="input input-sm input-bordered text-right w-32"
-                bind:value={drawInterval}
-              />
-              <span class="label-text">毫秒</span>
-            </span>
-          </label>
-        </div>
-      {/if}
-    {/if}
-  </div>
+  <DrawExecutor
+    {selectedGacha}
+    {isDrawing}
+    {onDrawClick}
+    {reset}
+    bind:keepDrawingItem
+    bind:drawInterval
+  />
 
   {#if latestDrawnItem}
     <div class="flex flex-col gap-2">
@@ -136,7 +77,7 @@
       <div>物品機率: {latestDrawnItem.randomItem.rate}%</div>
     </div>
     <div>
-      <GachaDrawHistory {gachaDrawHistory} />
+      <DrawnInfo {gachaDrawHistory} />
     </div>
   {/if}
 </div>
