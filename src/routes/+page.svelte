@@ -1,4 +1,5 @@
 <script lang="ts">
+  import { browser } from '$app/environment';
   import { type Gacha, type GachaDrawResult, type GachaItem } from '$lib';
   import { draw } from '$lib/core';
   import GachaSelector from '$pageComponents/home/GachaSelector.svelte';
@@ -9,7 +10,7 @@
   let latestDrawnItem: GachaDrawResult | undefined;
   let gachaDrawHistory: GachaDrawResult[] = [];
   let keepDrawingItem: GachaItem | null = null;
-  let drawInterval = 50;
+  let drawInterval = (browser && Number(localStorage.getItem('drawInterval'))) || 50;
   let isDrawing = false;
 
   async function onDrawClick(size: number) {
@@ -61,6 +62,7 @@
     {reset}
     bind:keepDrawingItem
     bind:drawInterval
+    on:intervalChange={({ detail }) => localStorage.setItem('drawInterval', detail.toString())}
   />
 
   {#if latestDrawnItem}
