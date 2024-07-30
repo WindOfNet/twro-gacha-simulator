@@ -10,7 +10,7 @@
   export let reset: () => void;
 
   const dispatch = createEventDispatcher<{ intervalChange: number }>();
-  const drawButtons = [1, 10, 50, 100];
+  const drawButtons = [1, 10, 50, 100, 200, 500, 1000];
 
   let drawingSize: number | null = null;
 
@@ -19,9 +19,9 @@
 </script>
 
 <div class="max-w-sm flex flex-col gap-2">
-  <div class="flex gap-2 whitespace-nowrap">
+  <div class="grid grid-cols-4 gap-2">
     {#each drawButtons as size}
-      <div class="w-full">
+      <div>
         <button
           class="btn btn-primary w-full"
           disabled={(isDrawing && drawingSize !== size) || (size !== 1 && keepDrawingItem !== null)}
@@ -34,7 +34,7 @@
         </button>
       </div>
     {/each}
-    <div class="w-full">
+    <div>
       <button class="btn btn-warning w-full" on:click={reset}>清除紀錄</button>
     </div>
   </div>

@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { type GachaDrawResult } from '$lib';
+  import { type GachaDrawResult, type Gacha } from '$lib';
   import _ from 'lodash';
   import fe from 'feather-icons';
 
@@ -8,6 +8,7 @@
     analysis = 2
   }
 
+  export let gacha: Gacha;
   export let gachaDrawHistory: GachaDrawResult[] = [];
 
   let displayType = display.hist;
@@ -83,7 +84,12 @@
         <tbody>
           {#each analysisData as item}
             <tr>
-              <td>{item.name}</td>
+              <td>
+                {item.name}
+                <span class="text-red-400 ml-2">
+                  ({gacha.items.find((x) => x.name === item.name)?.rate}%)
+                </span>
+              </td>
               <td align="right">{item.count}</td>
               <td align="right">{((item.count / gachaDrawHistory.length) * 100).toFixed(4)}%</td>
             </tr>

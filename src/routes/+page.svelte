@@ -79,7 +79,7 @@
       <div>物品機率: {latestDrawnItem.randomItem.rate}%</div>
     </div>
     <div>
-      <DrawnInfo {gachaDrawHistory} />
+      <DrawnInfo gacha={selectedGacha} {gachaDrawHistory} />
     </div>
   {/if}
 </div>
