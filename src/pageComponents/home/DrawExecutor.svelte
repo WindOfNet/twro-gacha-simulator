@@ -1,21 +1,23 @@
 <script lang="ts">
-  import { createEventDispatcher } from 'svelte';
   import type { Gacha, GachaItem } from '$lib';
 
   export let selectedGacha: Gacha;
   export let keepDrawingItem: GachaItem | null;
-  export let drawInterval: number;
+  export let drawInterval: number | null;
   export let isDrawing: boolean;
   export let onDrawClick: (size: number) => void;
   export let reset: () => void;
 
-  const dispatch = createEventDispatcher<{ intervalChange: number }>();
   const drawButtons = [1, 10, 50, 100, 200, 500, 1000];
 
   let drawingSize: number | null = null;
 
   $: drawButtonLabel = (size: number) =>
     size === 1 ? '抽' : isDrawing && drawingSize === size ? '停止' : `抽 ${size}`;
+
+  function handleDrawIntervalChange() {
+    localStorage.setItem('drawInterval', drawInterval?.toString() ?? '');
+  }
 </script>
 
 <div class="max-w-sm flex flex-col gap-2">
@@ -60,7 +62,7 @@
             min="0"
             class="input input-sm input-bordered text-right w-32"
             bind:value={drawInterval}
-            on:change={() => dispatch('intervalChange', drawInterval)}
+            on:change={handleDrawIntervalChange}
           />
           <span class="label-text">毫秒</span>
         </span>

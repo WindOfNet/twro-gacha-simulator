@@ -1,17 +1,18 @@
+<script context="module" lang="ts">
+  export enum display {
+    hist = 1,
+    analysis = 2
+  }
+</script>
+
 <script lang="ts">
   import { type GachaDrawResult, type Gacha } from '$lib';
   import _ from 'lodash';
   import fe from 'feather-icons';
 
-  enum display {
-    hist = 1,
-    analysis = 2
-  }
-
   export let gacha: Gacha;
   export let gachaDrawHistory: GachaDrawResult[] = [];
-
-  let displayType = display.hist;
+  export let displayType: display = display.hist;
 
   $: over5000 = gachaDrawHistory.length > 5000;
   $: analysisData = _.chain(gachaDrawHistory)
