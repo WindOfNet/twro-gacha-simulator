@@ -18,6 +18,8 @@
     const getDrawInterval = localStorage.getItem('drawInterval');
     if (getDrawInterval) {
       drawInterval = parseInt(getDrawInterval);
+    } else {
+      drawInterval = 50;
     }
   });
 
