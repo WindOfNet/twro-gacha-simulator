@@ -3,6 +3,11 @@
     hist = 1,
     analysis = 2
   }
+
+  export enum sortBy {
+    actualRate = 1,
+    originalRate = 2
+  }
 </script>
 
 <script lang="ts">
@@ -14,15 +19,19 @@
   export let gachaDrawHistory: GachaDrawResult[] = [];
   export let displayType: display = display.hist;
 
+  let sortType: sortBy = sortBy.actualRate;
+
   $: over5000 = gachaDrawHistory.length > 5000;
   $: analysisData = _.chain(gachaDrawHistory)
     .groupBy('randomItem.name')
     .entries()
     .map(([name, data]) => ({
       name,
-      count: data.length
+      count: data.length,
+      actualRate: (data.length / gachaDrawHistory.length) * 100,
+      originalRate: gacha.items.find((x) => x.name === name)?.rate || 0
     }))
-    .orderBy('count', 'desc')
+    .orderBy(sortType === sortBy.actualRate ? 'actualRate' : 'originalRate', 'desc')
     .value();
 </script>
 
@@ -76,6 +85,26 @@
     {/if}
 
     {#if displayType === display.analysis}
+      <div class="join">
+        <button
+          class="btn btn-sm join-item"
+          class:btn-primary={sortType === sortBy.actualRate}
+          on:click={() => (sortType = sortBy.actualRate)}
+        >
+          <!-- eslint-disable-next-line -->
+          {@html fe.icons['trending-up'].toSvg({ class: 'w-4 h-4' })}
+          <span>依統計機率排序</span>
+        </button>
+        <button
+          class="btn btn-sm join-item"
+          class:btn-primary={sortType === sortBy.originalRate}
+          on:click={() => (sortType = sortBy.originalRate)}
+        >
+          <!-- eslint-disable-next-line -->
+          {@html fe.icons['percent'].toSvg({ class: 'w-4 h-4' })}
+          <span>依轉蛋物品機率排序</span>
+        </button>
+      </div>
       <table class="table table-xs table-pin-rows table-pin-cols max-w-sm">
         <thead>
           <th>物品名稱</th>
@@ -88,11 +117,11 @@
               <td>
                 {item.name}
                 <span class="text-red-400 ml-2">
-                  ({gacha.items.find((x) => x.name === item.name)?.rate}%)
+                  ({item.originalRate}%)
                 </span>
               </td>
               <td align="right">{item.count}</td>
-              <td align="right">{((item.count / gachaDrawHistory.length) * 100).toFixed(4)}%</td>
+              <td align="right">{item.actualRate.toFixed(4)}%</td>
             </tr>
           {/each}
         </tbody>
