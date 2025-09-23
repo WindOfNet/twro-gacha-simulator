@@ -1,5 +1,0 @@
-[[redirects]]
-  from = "https://twro-gacha-simulator.netlify.app/*"
-  to = "https://twro-gacha-simulator.windofnet.cc/"
-  status = 301
-  force = true
