@@ -47,6 +47,7 @@ import gacha202508_1 from './2025 8月轉蛋Ⅰ.json';
 import gacha202508_2 from './2025 8月轉蛋Ⅱ.json';
 import gacha202509_1 from './2025 9月轉蛋Ⅰ.json';
 import gacha202509_2 from './2025 9月轉蛋Ⅱ.json';
+import gacha202509_3 from './2025_9月轉蛋Ⅲ.json';
 
 const gachas: Gacha[] = [
   雪季轉蛋,
@@ -96,7 +97,8 @@ const gachas: Gacha[] = [
   gacha202508_1,
   gacha202508_2,
   gacha202509_1,
-  gacha202509_2
+  gacha202509_2,
+  gacha202509_3
 ];
 
 export default gachas;
