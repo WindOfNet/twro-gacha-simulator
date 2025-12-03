@@ -10,6 +10,15 @@
 
   const drawButtons = [1, 10, 50, 100, 200, 500, 1000];
 
+  const intervalOptions = [
+    { label: '烏龜抽', value: 1000 },
+    { label: '正常抽 (500毫秒)', value: 500 },
+    { label: '快抽 (100毫秒)', value: 100 },
+    { label: '高速抽 (50毫秒)', value: 50 },
+    { label: '極限抽 (5毫秒)', value: 5 },
+    { label: '只想看結果', value: 0 }
+  ];
+
   let drawingSize: number | null = null;
 
   $: drawButtonLabel = (size: number) =>
@@ -56,15 +65,15 @@
       <label class="label cursor-pointer justify-normal gap-4">
         <span class="space-x-2 whitespace-nowrap">
           <span class="label-text">每抽間隔</span>
-          <input
-            type="number"
-            inputmode="numeric"
-            min="0"
-            class="input input-sm input-bordered text-right w-32"
+          <select
+            class="select select-bordered select-sm"
             bind:value={drawInterval}
             on:change={handleDrawIntervalChange}
-          />
-          <span class="label-text">毫秒</span>
+          >
+            {#each intervalOptions as option}
+              <option value={option.value}>{option.label}</option>
+            {/each}
+          </select>
         </span>
       </label>
     </div>
